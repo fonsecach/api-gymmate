@@ -1,0 +1,36 @@
+{
+  "name": "api-gymmate",
+  "version": "1.0.0",
+  "description": "GymPass style app.",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "tsx watch src/server.ts",
+    "build": "tsup src --out-dir build",
+    "start": "node build/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fonsecach/api-gymmate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fonsecach/api-gymmate/issues"
+  },
+  "homepage": "https://github.com/fonsecach/api-gymmate#readme",
+  "devDependencies": {
+    "@rocketseat/eslint-config": "2.2.2",
+    "@types/node": "22.14.1",
+    "eslint": "8.57.1",
+    "tsup": "8.4.0",
+    "tsx": "4.19.3",
+    "typescript": "5.8.3"
+  },
+  "dependencies": {
+    "dotenv": "16.5.0",
+    "fastify": "5.3.2",
+    "zod": "3.24.3"
+  }
+}
