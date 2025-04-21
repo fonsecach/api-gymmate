@@ -15,35 +15,43 @@ datasource db {
 }
 
 model User {
-  @@map("users")
-  id String @id @default(uuid())
-  email String @unique
-  name String
+  id            String   @id @default(uuid())
+  email         String   @unique
+  name          String
   password_hash String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  checkIns CheckIn[]
+
+  @@map("users")
 }
 
-model CheckIn{
-  @@map("check_ins")
-  id String @id @default(uuid())
-  created_at DateTime @default(now())
+model CheckIn {
+  id           String    @id @default(uuid())
+  created_at   DateTime  @default(now())
   validated_at DateTime?
-  // userId String @relation(fields: [userId], references: [id])
-  // gymId String @relation(fields: [gymId], references: [id])
+  user         User      @relation(fields: [user_id], references: [id])
+  gym          Gym       @relation(fields: [gym_id], references: [id])
+  user_id      String
+  gym_id       String
 
-  // @@index([userId])
-  // @@index([gymId])
+  @@index([user_id])
+  @@index([gym_id])
+  @@map("check_ins")
 }
 
 model Gym {
-  @@map("gyms")
-  id String @id @default(uuid())
-  title String
+  id          String   @id @default(uuid())
+  title       String
   description String?
-  latitude Decimal
-  longitude Decimal
-  phone String?
-  address String?
-  created_at DateTime @default(now())
+  latitude    Decimal
+  longitude   Decimal
+  phone       String?
+  address     String?
+  created_at  DateTime @default(now())
+
+  CheckIn CheckIn[]
+
+  @@map("gyms")
 }
