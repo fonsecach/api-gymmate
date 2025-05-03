@@ -1,4 +1,7 @@
+import { User } from './../../generated/prisma/index.d';
+import type { UsersRepository } from "@/repositories/prisma/users-repository";
 import { hash } from "bcryptjs";
+import { UserAlreadyExistsError } from './errors/user-already-exists-error';
 
 interface RegisterUseCaseRequest {
     name: string;
@@ -8,8 +11,7 @@ interface RegisterUseCaseRequest {
 
 export class RegisterUseCase {
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    constructor( private usersRepository: any) {}
+    constructor( private usersRepository: UsersRepository) {}
 
     async execute ({name, email, password,} : RegisterUseCaseRequest) {
     // passamos dois argumentos a senha e o número de rounds
@@ -18,7 +20,7 @@ export class RegisterUseCase {
     const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
     if (userWithSameEmail) {
-        throw new Error('E-mail already exists.');
+        throw new UserAlreadyExistsError();
     }
     
     await this.usersRepository.create({

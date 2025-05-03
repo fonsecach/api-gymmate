@@ -1,7 +1,9 @@
+import { User } from './../../../generated/prisma/index.d';
 import { z } from "zod";
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { RegisterUseCase } from "@/use-cases/register";
-import { PrismaUsersRepository } from "@/repositories/prisma-users-repository";
+import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository";
+import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error';
 
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
@@ -12,42 +14,28 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
   });
 
   try {
-    // Validate request body
     const { name, email, password } = registerBodySchema.parse(request.body);
 
     const prismaUsersRepository = new PrismaUsersRepository();
     const registerUseCase = new RegisterUseCase(prismaUsersRepository);
 
-    // Execute registration use case
     await registerUseCase.execute({
       name,
       email,
       password,
     });
 
-    // Return success response
     return reply.status(201).send({
       message: 'User created successfully'
     });
+    
   } catch (error) {
-    // Handle known errors
-    if (error instanceof z.ZodError) {
-      return reply.status(400).send({
-        message: 'Validation error',
-        errors: error.format()
-      });
-    }
 
-    if (error instanceof Error && error.message === 'E-mail already exists.') {
+    if (error instanceof UserAlreadyExistsError) {
       return reply.status(409).send({
-        message: 'E-mail already exists.'
-      });
+        message: error.message});
     }
 
-    // Handle unexpected errors
-    console.error('Registration error:', error);
-    return reply.status(500).send({
-      message: 'Internal server error'
-    });
+    throw error;
   }
 }
