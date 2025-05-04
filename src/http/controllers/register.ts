@@ -1,4 +1,3 @@
-import { User } from './../../../generated/prisma/index.d';
 import { z } from "zod";
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { RegisterUseCase } from "@/use-cases/register";
